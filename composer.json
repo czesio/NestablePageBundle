@@ -1,5 +1,5 @@
 {
-    "name": "davi/nestable-page-bundle",
+    "name": "czesio/nestable-page-bundle",
     "description": "nestable page bundle bla bla bla",
     "type": "symfony-bundle",
     "require": {
