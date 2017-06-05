@@ -1,85 +1,81 @@
 <?php
-
-namespace Czesio\NestablePageBundle\Entity;
+namespace Czesio\NestablePageBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Page
  *
- * @ORM\Table(name="page")
- * @ORM\Entity(repositoryClass="Czesio\NestablePageBundle\Repository\PageRepository")
- * @ORM\HasLifecycleCallbacks()
  */
-class Page
+abstract class PageBase
 {
     /**
-     * @var int
+     * @var integer
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="slug", type="string", length=255, unique=true)
      */
-    private $slug;
+    protected $slug;
 
     /**
-    * @ORM\ManyToOne(targetEntity="Page", inversedBy="children")
-    * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")}
-    * @ORM\OrderBy({"sequence" = "ASC"})
-    */
-    private $parent;
-
-    /**
-     * @var bool
+     * @var boolean
      *
      * @ORM\Column(name="isPublished", type="boolean", nullable=true)
      */
-    private $isPublished;
+    protected $isPublished;
 
     /**
-     * @var int
+     * @var integer
      *
      * @ORM\Column(name="sequence", type="integer", nullable=true)
      */
-    private $sequence;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Page", mappedBy="parent")
-     * @ORM\OrderBy({"sequence" = "ASC"})
-     */
-    private $children;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Czesio\NestablePageBundle\Entity\PageMeta", mappedBy="page", cascade={"persist"})
-     */
-    private $pageMetas;
+    protected $sequence;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="modified", type="datetime")
      */
-    private $modified;
+    protected $modified;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Bpeh\NestablePageBundle\Model\PageBase", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")}
+     * @ORM\OrderBy({"sequence" = "ASC"})
+     */
+    protected $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Bpeh\NestablePageBundle\Model\PageBase", mappedBy="parent")
+     * @ORM\OrderBy({"sequence" = "ASC"})
+     */
+    protected $children;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Bpeh\NestablePageBundle\Model\PageMetaBase", mappedBy="page", cascade={"persist"}))
+     */
+    protected $pageMetas;
 
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -90,7 +86,6 @@ class Page
      * Set slug
      *
      * @param string $slug
-     *
      * @return Page
      */
     public function setSlug($slug)
@@ -114,7 +109,6 @@ class Page
      * Set isPublished
      *
      * @param boolean $isPublished
-     *
      * @return Page
      */
     public function setIsPublished($isPublished)
@@ -127,7 +121,7 @@ class Page
     /**
      * Get isPublished
      *
-     * @return bool
+     * @return boolean
      */
     public function getIsPublished()
     {
@@ -138,7 +132,6 @@ class Page
      * Set sequence
      *
      * @param integer $sequence
-     *
      * @return Page
      */
     public function setSequence($sequence)
@@ -151,7 +144,7 @@ class Page
     /**
      * Get sequence
      *
-     * @return int
+     * @return integer
      */
     public function getSequence()
     {
@@ -162,7 +155,6 @@ class Page
      * Set modified
      *
      * @param \DateTime $modified
-     *
      * @return Page
      */
     public function setModified($modified)
@@ -186,7 +178,6 @@ class Page
      * Set created
      *
      * @param \DateTime $created
-     *
      * @return Page
      */
     public function setCreated($created)
@@ -207,6 +198,15 @@ class Page
     }
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->pageMetas = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
      * @ORM\PrePersist
      */
     public function prePersist()
@@ -222,30 +222,12 @@ class Page
     }
 
     /**
-     * convert obj to string
-     *
-     * @return string
-     */
-    public function __toString() {
-        return $this->slug;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->pageMetas = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
      * Set parent
      *
-     * @param \Czesio\NestablePageBundle\Entity\Page $parent
-     *
+     * @param \Czesio\NestablePageBundle\Model\PageBase $parent
      * @return Page
      */
-    public function setParent(\Czesio\NestablePageBundle\Entity\Page $parent = null)
+    public function setParent(\Czesio\NestablePageBundle\Model\PageBase $parent = null)
     {
         $this->parent = $parent;
 
@@ -255,7 +237,7 @@ class Page
     /**
      * Get parent
      *
-     * @return \Czesio\NestablePageBundle\Entity\Page
+     * @return \Czesio\NestablePageBundle\Model\PageBase
      */
     public function getParent()
     {
@@ -263,27 +245,26 @@ class Page
     }
 
     /**
-     * Add child
+     * Add children
      *
-     * @param \Czesio\NestablePageBundle\Entity\Page $child
-     *
+     * @param \Czesio\NestablePageBundle\Model\PageBase $children
      * @return Page
      */
-    public function addChild(\Czesio\NestablePageBundle\Entity\Page $child)
+    public function addChild(\Czesio\NestablePageBundle\Model\PageBase $children)
     {
-        $this->children[] = $child;
+        $this->children[] = $children;
 
         return $this;
     }
 
     /**
-     * Remove child
+     * Remove children
      *
-     * @param \Czesio\NestablePageBundle\Entity\Page $child
+     * @param \Czesio\NestablePageBundle\Model\Page $children
      */
-    public function removeChild(\Czesio\NestablePageBundle\Entity\Page $child)
+    public function removeChild(\Czesio\NestablePageBundle\Model\PageBase $children)
     {
-        $this->children->removeElement($child);
+        $this->children->removeElement($children);
     }
 
     /**
@@ -297,27 +278,26 @@ class Page
     }
 
     /**
-     * Add pageMeta
+     * Add pageMetas
      *
-     * @param \Czesio\NestablePageBundle\Entity\PageMeta $pageMeta
-     *
+     * @param \Czesio\NestablePageBundle\Model\PageMetaBase $pageMetas
      * @return Page
      */
-    public function addPageMeta(\Czesio\NestablePageBundle\Entity\PageMeta $pageMeta)
+    public function addPageMeta(\Czesio\NestablePageBundle\Model\PageMetaBase $pageMetas)
     {
-        $this->pageMetas[] = $pageMeta;
+        $this->pageMetas[] = $pageMetas;
 
         return $this;
     }
 
     /**
-     * Remove pageMeta
+     * Remove pageMetas
      *
-     * @param \Czesio\NestablePageBundle\Entity\PageMeta $pageMeta
+     * @param \Czesio\NestablePageBundle\Model\PageMetaBase $pageMetas
      */
-    public function removePageMeta(\Czesio\NestablePageBundle\Entity\PageMeta $pageMeta)
+    public function removePageMeta(\Czesio\NestablePageBundle\Model\PageMetaBase $pageMetas)
     {
-        $this->pageMetas->removeElement($pageMeta);
+        $this->pageMetas->removeElement($pageMetas);
     }
 
     /**
@@ -328,5 +308,14 @@ class Page
     public function getPageMetas()
     {
         return $this->pageMetas;
+    }
+
+    /**
+     * convert object to string
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->slug;
     }
 }

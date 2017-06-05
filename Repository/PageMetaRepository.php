@@ -1,8 +1,8 @@
 <?php
 
-namespace Songbird\NestablePageBundle\Repository;
+namespace Czesio\NestablePageBundle\Repository;
 
-use Songbird\NestablePageBundle\Entity\Page;
+use Czesio\NestablePageBundle\Model\PageBase;
 
 /**
  * PageMetaRepository
@@ -13,19 +13,25 @@ use Songbird\NestablePageBundle\Entity\Page;
 class PageMetaRepository extends \Doctrine\ORM\EntityRepository
 {
     /**
-     * @param Page $page
+     * @param PageBase $page
      * @param $locale
-     *
-     * @return PageMeta
+     * @param bool $count
+     * @return mixed
      */
-    public function findPageMetaByLocale(Page $page, $locale) {
+    public function findPageMetaByLocale(PageBase $page, $locale, $count = false) {
 
-        $query = $this->createQueryBuilder('pm')
-            ->where('pm.locale = :locale')
+        $qb = $this->createQueryBuilder('pm');
+        if ( $count ) {
+            $qb->select( 'count(pm.id)' );
+ 		}
+        $query =  $qb->where('pm.locale = :locale')
             ->andWhere('pm.page = :page')
             ->setParameter('locale', $locale)
             ->setParameter('page', $page)
             ->getQuery();
+        if ( $count ) {
+            return $query->getSingleScalarResult();
+ 		}
 
         return $query->getOneOrNullResult();
 

@@ -1,136 +1,194 @@
 <?php
+namespace Czesio\NestablePageBundle\Controller;
 
-namespace Songbird\NestablePageBundle\Controller;
-
-use Songbird\NestablePageBundle\Entity\PageMeta;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Czesio\NestablePageBundle\Model\PageMetaBase as PageMeta;
 
 /**
- * Pagemeta controller.
+ * PageMeta controller.
  *
- * @Route("songbird_pagemeta")
+ * @Route("/czesio_pagemeta")
  */
 class PageMetaController extends Controller
 {
+
+    private $entity;
+
+    private $entity_meta;
+
+    private $page_meta_form_type;
+
+    private $pagemeta_view_index;
+
+    private $pagemeta_view_new;
+
+    private $pagemeta_view_edit;
+
+    private $pagemeta_view_show;
+
+    public function init()
+    {
+        $this->entity = $this->container->getParameter('czesio_nestable_page.page_entity');
+        $this->entity_meta = $this->container->getParameter('czesio_nestable_page.pagemeta_entity');
+        $this->page_meta_form_type = $this->container->getParameter('czesio_nestable_page.pagemeta_form_type');
+        $this->pagemeta_view_index = $this->container->getParameter('czesio_nestable_page.pagemeta_view_index');
+        $this->pagemeta_view_new = $this->container->getParameter('czesio_nestable_page.pagemeta_view_new');
+        $this->pagemeta_view_edit = $this->container->getParameter('czesio_nestable_page.pagemeta_view_edit');
+        $this->pagemeta_view_show = $this->container->getParameter('czesio_nestable_page.pagemeta_view_show');
+    }
+
     /**
-     * Lists all pageMetum entities.
+     * Lists all PageMeta entities.
      *
-     * @Route("/", name="songbird_pagemeta_index")
+     * @Route("/", name="czesio_pagemeta_index")
      * @Method("GET")
      */
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
 
-        $pageMetas = $em->getRepository('SongbirdNestablePageBundle:PageMeta')->findAll();
+        $pageMetas = $em->getRepository($this->entity_meta)->findAll();
 
-        return $this->render('pagemeta/index.html.twig', array(
+        return $this->render($this->pagemeta_view_index, array(
             'pageMetas' => $pageMetas,
         ));
+
     }
 
     /**
-     * Creates a new pageMetum entity.
+     * Creates a new PageMeta entity.
      *
-     * @Route("/new", name="songbird_pagemeta_new")
+     * @Route("/new", name="czesio_pagemeta_new")
      * @Method({"GET", "POST"})
      */
     public function newAction(Request $request)
     {
-        $pageMetum = new Pagemeta();
-        $form = $this->createForm('Songbird\NestablePageBundle\Form\PageMetaType', $pageMetum);
+        $pageMeta = new $this->entity_meta();
+        $form = $this->createForm($this->page_meta_form_type, $pageMeta);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($pageMetum);
-            $em->flush();
 
-            return $this->redirectToRoute('songbird_pagemeta_show', array('id' => $pageMetum->getId()));
+            if ( $em->getRepository( $this->entity_meta )->findPageMetaByLocale( $pageMeta->getPage(), $pageMeta->getLocale() ) ) {
+                $this->get('session')->getFlashBag()->add( 'error', $this->get('translator')->trans('one_locale_per_pagemeta_only', array(), 'CzesioNestablePageBundle') );
+            } else {
+                $em->persist( $pageMeta );
+                $em->flush();
+                return $this->redirectToRoute( 'czesio_pagemeta_show', array( 'id' => $pageMeta->getId() ) );
+            }
         }
 
-        return $this->render('pagemeta/new.html.twig', array(
-            'pageMetum' => $pageMetum,
+        return $this->render($this->pagemeta_view_new, array(
+            'pageMeta' => $pageMeta,
             'form' => $form->createView(),
         ));
+
     }
 
     /**
-     * Finds and displays a pageMetum entity.
+     * Finds and displays a PageMeta entity.
      *
-     * @Route("/{id}", name="songbird_pagemeta_show")
+     * @Route("/{id}", name="czesio_pagemeta_show")
      * @Method("GET")
      */
-    public function showAction(PageMeta $pageMetum)
+    public function showAction(Request $request)
     {
-        $deleteForm = $this->createDeleteForm($pageMetum);
+        $em = $this->getDoctrine()->getManager();
 
-        return $this->render('pagemeta/show.html.twig', array(
-            'pageMetum' => $pageMetum,
+        $pageMeta = $em->getRepository($this->entity_meta)->find($request->get('id'));
+
+        $deleteForm = $this->createDeleteForm($pageMeta);
+
+        return $this->render($this->pagemeta_view_show, array(
+            'pageMeta' => $pageMeta,
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-     * Displays a form to edit an existing pageMetum entity.
+     * Displays a form to edit an existing PageMeta entity.
      *
-     * @Route("/{id}/edit", name="songbird_pagemeta_edit")
+     * @Route("/{id}/edit", name="czesio_pagemeta_edit")
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, PageMeta $pageMetum)
+    public function editAction(Request $request)
     {
-        $deleteForm = $this->createDeleteForm($pageMetum);
-        $editForm = $this->createForm('Songbird\NestablePageBundle\Form\PageMetaType', $pageMetum);
+        $em = $this->getDoctrine()->getManager();
+        $pageMeta = $em->getRepository($this->entity_meta)->find($request->get('id'));
+        $origId = $pageMeta->getPage()->getId();
+        $origLocale = $pageMeta->getLocale();
+
+        $deleteForm = $this->createDeleteForm($pageMeta);
+        $editForm = $this->createForm($this->page_meta_form_type, $pageMeta);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('songbird_pagemeta_edit', array('id' => $pageMetum->getId()));
+            $error = false;
+
+            // if page and local is the same, dont need to check locale count
+            if ($origLocale == $pageMeta->getLocale() && $origId == $pageMeta->getPage()->getId()) {
+                // all good
+            }
+            elseif ( $em->getRepository( $this->entity_meta )->findPageMetaByLocale( $pageMeta->getPage(), $pageMeta->getLocale(), true ) ) {
+                $this->get('session')->getFlashBag()->add( 'error', $this->get('translator')->trans('one_locale_per_pagemeta_only', array(), 'CzesioNestablePageBundle') );
+                $error = true;
+            }
+
+            // if everything is successful
+            if (!$error) {
+                $em->persist( $pageMeta );
+                $em->flush();
+                return $this->redirectToRoute( 'czesio_pagemeta_edit', array( 'id' => $pageMeta->getId() ) );
+            }
         }
 
-        return $this->render('pagemeta/edit.html.twig', array(
-            'pageMetum' => $pageMetum,
+        return $this->render($this->pagemeta_view_edit, array(
+            'pageMeta' => $pageMeta,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-     * Deletes a pageMetum entity.
+     * Deletes a PageMeta entity.
      *
-     * @Route("/{id}", name="songbird_pagemeta_delete")
+     * @Route("/{id}", name="czesio_pagemeta_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, PageMeta $pageMetum)
+    public function deleteAction(Request $request)
     {
-        $form = $this->createDeleteForm($pageMetum);
+        $em = $this->getDoctrine()->getManager();
+        $pageMeta = $em->getRepository($this->entity_meta)->find($request->get('id'));
+        $form = $this->createDeleteForm($pageMeta);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->remove($pageMetum);
+            $em->remove($pageMeta);
             $em->flush();
         }
 
-        return $this->redirectToRoute('songbird_pagemeta_index');
+        return $this->redirectToRoute('czesio_pagemeta_index');
     }
 
     /**
-     * Creates a form to delete a pageMetum entity.
+     * Creates a form to delete a PageMeta entity.
      *
-     * @param PageMeta $pageMetum The pageMetum entity
+     * @param PageMeta $pageMetum The PageMeta entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(PageMeta $pageMetum)
+    private function createDeleteForm(PageMeta $pageMeta)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('songbird_pagemeta_delete', array('id' => $pageMetum->getId())))
+            ->setAction($this->generateUrl('czesio_pagemeta_delete', array('id' => $pageMeta->getId())))
             ->setMethod('DELETE')
             ->getForm()
-        ;
+            ;
     }
 }

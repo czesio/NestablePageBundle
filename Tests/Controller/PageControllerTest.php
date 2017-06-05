@@ -1,6 +1,6 @@
 <?php
 
-namespace Songbird\NestablePageBundle\Tests\Controller;
+namespace Czesio\NestablePageBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Input\StringInput;
@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
  * SO THAT I can update them anytime
  *
  * Class PageControllerTest
- * @package Songbird\NestablePageBundle\Tests\Controller
+ * @package Czesio\NestablePageBundle\Tests\Controller
  */
 class PageControllerTest extends WebTestCase
 {
@@ -41,7 +41,7 @@ class PageControllerTest extends WebTestCase
 
     /**
      * GIVEN List Pages
-     * WHEN I go to /songbird_page
+     * WHEN I go to /czesio_page
      * THEN I should see the why_songbird slug under the about slug
      *
      * scenario 17.11
@@ -52,7 +52,7 @@ class PageControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/songbird_page/list');
+        $crawler = $client->request('GET', '/czesio_page/list');
         // i should see why_songbird text
         $this->assertContains(
             'why_songbird',
@@ -69,7 +69,7 @@ class PageControllerTest extends WebTestCase
 
     /**
      * GIVEN Show contact us page
-     * WHEN I go to /songbird_page/5
+     * WHEN I go to /czesio_page/5
      * THEN I should see the word "contact_us" and the word "Created"
      *
      * scenario 17.12
@@ -80,7 +80,7 @@ class PageControllerTest extends WebTestCase
     {
         $client = static::createClient();
         // go to main listing page
-        $crawler = $client->request('GET', '/songbird_page/list');
+        $crawler = $client->request('GET', '/czesio_page/list');
         // click on contact_us link
         $crawler = $client->click($crawler->selectLink('contact_us')->link());
 
@@ -99,7 +99,7 @@ class PageControllerTest extends WebTestCase
 
     /**
      * GIVEN Reorder home
-     * WHEN I simulate a drag and drop of the home menu to under the about menu and submit the post data to /songbird_page/reorder
+     * WHEN I simulate a drag and drop of the home menu to under the about menu and submit the post data to /czesio_page/reorder
      * THEN I should see "reordered successfully message" in the response and menus should be updated
      *
      * scenario 17.13
@@ -113,7 +113,7 @@ class PageControllerTest extends WebTestCase
         // home is dragged under about and in the second position
         $crawler = $client->request(
             'POST',
-            '/songbird_page/reorder',
+            '/czesio_page/reorder',
             array(
                 'id' => 1,
                 'parentId' => 2,
@@ -130,7 +130,7 @@ class PageControllerTest extends WebTestCase
         );
 
         // go back to page list again
-        $crawler = $client->request('GET', '/songbird_page/list');
+        $crawler = $client->request('GET', '/czesio_page/list');
         // there should be 2 parent menus
         $nodes = $crawler->filterXPath('//div[@id="nestable"]/ol');
         $this->assertEquals(count($nodes->children()), 2);
@@ -152,16 +152,16 @@ class PageControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/songbird_page/1/edit');
+        $crawler = $client->request('GET', '/czesio_page/1/edit');
 
         $form = $crawler->selectButton('Edit')->form(array(
-            'songbird_nestablepagebundle_page[slug]'  => 'home1',
+            'czesio_nestablepagebundle_page[slug]'  => 'home1',
         ));
 
         $client->submit($form);
 
         // go back to the list again and i should see the slug updated
-        $crawler = $client->request('GET', '/songbird_page/list');
+        $crawler = $client->request('GET', '/czesio_page/list');
         $this->assertContains(
             'home1',
             $client->getResponse()->getContent()
@@ -181,19 +181,19 @@ class PageControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/songbird_page/new');
+        $crawler = $client->request('GET', '/czesio_page/new');
 
         $form = $crawler->selectButton('Create')->form(array(
-            'songbird_nestablepagebundle_page[slug]'  => 'test_page',
-            'songbird_nestablepagebundle_page[isPublished]'  => true,
-            'songbird_nestablepagebundle_page[sequence]'  => 1,
-            'songbird_nestablepagebundle_page[parent]'  => 2,
+            'czesio_nestablepagebundle_page[slug]'  => 'test_page',
+            'czesio_nestablepagebundle_page[isPublished]'  => true,
+            'czesio_nestablepagebundle_page[sequence]'  => 1,
+            'czesio_nestablepagebundle_page[parent]'  => 2,
         ));
 
         $client->submit($form);
 
         // go back to the list again and i should see the slug updated
-        $crawler = $client->request('GET', '/songbird_page/list');
+        $crawler = $client->request('GET', '/czesio_page/list');
         $this->assertContains(
             'test_page',
             $client->getResponse()->getContent()
@@ -202,11 +202,11 @@ class PageControllerTest extends WebTestCase
         $crawler = $client->click($crawler->selectLink('Create New PageMeta')->link());
         // at create new pagemeta page. new test_page is id 6
         $form = $crawler->selectButton('Create')->form(array(
-            'songbird_nestablepagebundle_pagemeta[pageTitle]'  => 'test page title',
-            'songbird_nestablepagebundle_pagemeta[menuTitle]'  => 'test menu title',
-            'songbird_nestablepagebundle_pagemeta[shortDescription]'  => 'short content',
-            'songbird_nestablepagebundle_pagemeta[content]'  => 'long content',
-            'songbird_nestablepagebundle_pagemeta[page]'  => 6,
+            'czesio_nestablepagebundle_pagemeta[pageTitle]'  => 'test page title',
+            'czesio_nestablepagebundle_pagemeta[menuTitle]'  => 'test menu title',
+            'czesio_nestablepagebundle_pagemeta[shortDescription]'  => 'short content',
+            'czesio_nestablepagebundle_pagemeta[content]'  => 'long content',
+            'czesio_nestablepagebundle_pagemeta[page]'  => 6,
         ));
 
         $crawler = $client->submit($form);
@@ -224,7 +224,7 @@ class PageControllerTest extends WebTestCase
         $crawler = $client->submit($form);
 
         // go back to the pagemeta list again and i should NOT see the test_page anymore
-        $crawler = $client->request('GET', '/songbird_pagemeta');
+        $crawler = $client->request('GET', '/czesio_pagemeta');
 
         $this->assertNotContains(
             'test page title',
@@ -234,7 +234,7 @@ class PageControllerTest extends WebTestCase
 
     /**
      * GIVEN Delete contact us page
-     * WHEN go to /songbird_page/5 and click "Delete" button
+     * WHEN go to /czesio_page/5 and click "Delete" button
      * THEN I should see the contact_us slug no longer available in the listing page. Page id 5 should no longer be found in the pagemeta table
      *
      * scenario 17.16
@@ -243,7 +243,7 @@ class PageControllerTest extends WebTestCase
     {
         $client = static::createClient();
         // now if we remove contact_us page, ie id 5, all its page meta should be deleted
-        $crawler = $client->request('GET', '/songbird_page/5');
+        $crawler = $client->request('GET', '/czesio_page/5');
         $form = $crawler->selectButton('Delete')->form();
         $crawler = $client->submit($form);
         $crawler = $client->followRedirect();
@@ -254,7 +254,7 @@ class PageControllerTest extends WebTestCase
         );
 
         // we now connect to do and make sure the related pagemetas are no longer in the pagemeta table.
-        $res = $client->getContainer()->get('doctrine')->getRepository('SongbirdNestablePageBundle:PageMeta')->findByPage(5);
+        $res = $client->getContainer()->get('doctrine')->getRepository('CzesioNestablePageBundle:PageMeta')->findByPage(5);
         $this->assertEquals(0, count($res));
     }
 
@@ -265,13 +265,13 @@ class PageControllerTest extends WebTestCase
         $client = static::createClient();
 
         // Create a new entry in the database
-        $crawler = $client->request('GET', '/songbird_page/');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /songbird_page/");
+        $crawler = $client->request('GET', '/czesio_page/');
+        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /czesio_page/");
         $crawler = $client->click($crawler->selectLink('Create a new entry')->link());
 
         // Fill in the form and submit it
         $form = $crawler->selectButton('Create')->form(array(
-            'songbird_nestablepagebundle_page[field_name]'  => 'Test',
+            'czesio_nestablepagebundle_page[field_name]'  => 'Test',
             // ... other fields to fill
         ));
 
@@ -285,7 +285,7 @@ class PageControllerTest extends WebTestCase
         $crawler = $client->click($crawler->selectLink('Edit')->link());
 
         $form = $crawler->selectButton('Update')->form(array(
-            'songbird_nestablepagebundle_page[field_name]'  => 'Foo',
+            'czesio_nestablepagebundle_page[field_name]'  => 'Foo',
             // ... other fields to fill
         ));
 

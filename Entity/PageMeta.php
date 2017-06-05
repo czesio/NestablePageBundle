@@ -1,6 +1,6 @@
 <?php
 
-namespace Songbird\NestablePageBundle\Entity;
+namespace Czesio\NestablePageBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * PageMeta
  *
  * @ORM\Table(name="page_meta")
- * @ORM\Entity(repositoryClass="Songbird\NestablePageBundle\Repository\PageMetaRepository")
+ * @ORM\Entity(repositoryClass="Czesio\NestablePageBundle\Repository\PageMetaRepository")
  */
 class PageMeta
 {
@@ -22,7 +22,7 @@ class PageMeta
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Songbird\NestablePageBundle\Entity\Page", inversedBy="pageMetas")
+     * @ORM\ManyToOne(targetEntity="Czesio\NestablePageBundle\Entity\Page", inversedBy="pageMetas")
      * @ORM\JoinColumn(name="page_id", referencedColumnName="id", onDelete="CASCADE")}
      */
     private $page;
@@ -204,11 +204,11 @@ class PageMeta
     /**
      * Set page
      *
-     * @param \Songbird\NestablePageBundle\Entity\Page $page
+     * @param \Czesio\NestablePageBundle\Entity\Page $page
      *
      * @return PageMeta
      */
-    public function setPage(\Songbird\NestablePageBundle\Entity\Page $page = null)
+    public function setPage(\Czesio\NestablePageBundle\Entity\Page $page = null)
     {
         $this->page = $page;
 
@@ -218,7 +218,7 @@ class PageMeta
     /**
      * Get page
      *
-     * @return \Songbird\NestablePageBundle\Entity\Page
+     * @return \Czesio\NestablePageBundle\Entity\Page
      */
     public function getPage()
     {

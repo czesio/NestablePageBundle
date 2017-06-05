@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% trans_default_domain "BpehNestablePageBundle" %}
+
+{% block body %}
+    <h1>{{ 'page'|trans }}</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ page.id }}</td>
+            </tr>
+            <tr>
+                <th>Slug</th>
+                <td>{{ page.slug }}</td>
+            </tr>
+            <tr>
+                <th>Ispublished</th>
+                <td>{% if page.isPublished %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Sequence</th>
+                <td>{{ page.sequence }}</td>
+            </tr>
+            <tr>
+                <th>Modified</th>
+                <td>{% if page.modified %}{{ page.modified|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Created</th>
+                <td>{% if page.created %}{{ page.created|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('bpeh_page_list') }}">{{ 'back_to_list' | trans }}</a>
+        </li>
+        <li>
+            <a href="{{ path('bpeh_page_edit', { 'id': page.id }) }}">Edit Page</a>
+        </li>
+        {# checks if pagemeta is defined. display view and edit if yes #}
+        {% if pageMeta.id is defined %}
+            <li>
+                <a href="{{ path('bpeh_pagemeta_show', { 'id': pageMeta.id }) }}">View PageMeta</a>
+            </li>
+            <li>
+                <a href="{{ path('bpeh_pagemeta_edit', { 'id': pageMeta.id }) }}">Edit PageMeta</a>
+            </li>
+        {%  endif %}
+        <li>
+            <a href="{{ path('bpeh_pagemeta_new') }}">Add PageMeta</a>
+        </li>
+
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

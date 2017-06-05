@@ -10,7 +10,7 @@
         "doctrine/doctrine-fixtures-bundle": "~2.0"
     },
     "autoload": {
-        "psr-4": { "Songbird\\NestablePageBundle\\" : "" }
+        "psr-4": { "Czesio\\NestablePageBundle\\" : "" }
     },
 
     "license": "MIT",

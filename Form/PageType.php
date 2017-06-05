@@ -1,6 +1,6 @@
 <?php
 
-namespace Songbird\NestablePageBundle\Form;
+namespace Czesio\NestablePageBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,7 +22,7 @@ class PageType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Songbird\NestablePageBundle\Entity\Page'
+            'data_class' => 'Czesio\NestablePageBundle\Entity\Page'
         ));
     }
 
@@ -31,7 +31,7 @@ class PageType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'songbird_nestablepagebundle_page';
+        return 'czesio_nestablepagebundle_page';
     }
 
 

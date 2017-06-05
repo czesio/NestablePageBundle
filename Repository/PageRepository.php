@@ -1,6 +1,6 @@
 <?php
 
-namespace Songbird\NestablePageBundle\Repository;
+namespace Czesio\NestablePageBundle\Repository;
 
 /**
  * PageRepository

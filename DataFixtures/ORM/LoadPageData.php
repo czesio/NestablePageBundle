@@ -1,12 +1,12 @@
 <?php
-namespace Songbird\NestablePageBundle\DataFixtures\ORM;
+namespace Czesio\NestablePageBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Songbird\NestablePageBundle\Entity\Page;
-use Songbird\NestablePageBundle\Entity\PageMeta;
+use Czesio\NestablePageBundle\Entity\Page;
+use Czesio\NestablePageBundle\Entity\PageMeta;
 
 class LoadPageData extends AbstractFixture implements ContainerAwareInterface
 {
