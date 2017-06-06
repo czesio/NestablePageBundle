@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% trans_default_domain "BpehNestablePageBundle" %}
+{% trans_default_domain "CzesioNestablePageBundle" %}
 
 {% block body %}
     <h1>{{ 'page'|trans }}</h1>
@@ -36,22 +36,22 @@
 
     <ul>
         <li>
-            <a href="{{ path('bpeh_page_list') }}">{{ 'back_to_list' | trans }}</a>
+            <a href="{{ path('czesio_page_list') }}">{{ 'back_to_list' | trans }}</a>
         </li>
         <li>
-            <a href="{{ path('bpeh_page_edit', { 'id': page.id }) }}">Edit Page</a>
+            <a href="{{ path('czesio_page_edit', { 'id': page.id }) }}">Edit Page</a>
         </li>
         {# checks if pagemeta is defined. display view and edit if yes #}
         {% if pageMeta.id is defined %}
             <li>
-                <a href="{{ path('bpeh_pagemeta_show', { 'id': pageMeta.id }) }}">View PageMeta</a>
+                <a href="{{ path('czesio_pagemeta_show', { 'id': pageMeta.id }) }}">View PageMeta</a>
             </li>
             <li>
-                <a href="{{ path('bpeh_pagemeta_edit', { 'id': pageMeta.id }) }}">Edit PageMeta</a>
+                <a href="{{ path('czesio_pagemeta_edit', { 'id': pageMeta.id }) }}">Edit PageMeta</a>
             </li>
         {%  endif %}
         <li>
-            <a href="{{ path('bpeh_pagemeta_new') }}">Add PageMeta</a>
+            <a href="{{ path('czesio_pagemeta_new') }}">Add PageMeta</a>
         </li>
 
         <li>

@@ -55,20 +55,20 @@ abstract class PageBase
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="Bpeh\NestablePageBundle\Model\PageBase", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="Czesio\NestablePageBundle\Model\PageBase", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")}
      * @ORM\OrderBy({"sequence" = "ASC"})
      */
     protected $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="Bpeh\NestablePageBundle\Model\PageBase", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="Czesio\NestablePageBundle\Model\PageBase", mappedBy="parent")
      * @ORM\OrderBy({"sequence" = "ASC"})
      */
     protected $children;
 
     /**
-     * @ORM\OneToMany(targetEntity="Bpeh\NestablePageBundle\Model\PageMetaBase", mappedBy="page", cascade={"persist"}))
+     * @ORM\OneToMany(targetEntity="Czesio\NestablePageBundle\Model\PageMetaBase", mappedBy="page", cascade={"persist"}))
      */
     protected $pageMetas;
 

@@ -2,20 +2,20 @@
 
 {% block stylesheets %}
 	{{ parent() }}
-	<link rel="stylesheet" href="{{ asset('bundles/bpehnestablepage/css/styles.css ') }}">
+	<link rel="stylesheet" href="{{ asset('bundles/czesionestablepage/css/styles.css ') }}">
 {% endblock %}
 
 {% block body -%}
 	<div class="alert alert-dismissable">
-		{{ 'flash_reorder_instructions' | trans({}, 'BpehNestablePageBundle') }}
+		{{ 'flash_reorder_instructions' | trans({}, 'CzesioNestablePageBundle') }}
 	</div>
 
 	{% block main %}
-	    <button type="button" onclick="$('.dd').nestable('expandAll')">{{ 'expand_all'|trans({}, 'BpehNestablePageBundle') }}</button>
-	    <button type="button" onclick="$('.dd').nestable('collapseAll')">{{ 'collapse_all'|trans({}, 'BpehNestablePageBundle') }}</button>
+	    <button type="button" onclick="$('.dd').nestable('expandAll')">{{ 'expand_all'|trans({}, 'CzesioNestablePageBundle') }}</button>
+	    <button type="button" onclick="$('.dd').nestable('collapseAll')">{{ 'collapse_all'|trans({}, 'CzesioNestablePageBundle') }}</button>
 	    <div id="nestable" class="dd">
 	        <ol class="dd-list">
-	            {% include "BpehNestablePageBundle:Page:tree.html.twig" with { 'tree':tree } %}
+	            {% include "CzesioNestablePageBundle:Page:tree.html.twig" with { 'tree':tree } %}
 	        </ol>
 	    </div>
 	{% endblock %}
@@ -24,10 +24,10 @@
 
 {% block script %}
     {{ parent() }}
-    <script src="{{ asset('bundles/bpehnestablepage/js/jquery-1.11.3.min.js') }}"></script>
-    <script src="{{ asset('bundles/bpehnestablepage/js/jquery.nestable.js') }}"></script>
-	<button onclick=window.location="{{ path('bpeh_page_new') }}">{{ 'new_page'|trans({}, 'BpehNestablePageBundle') }}</button>
-	<button onclick=window.location="{{ path('bpeh_pagemeta_new') }}">{{ 'new_pagemeta'|trans({}, 'BpehNestablePageBundle') }}</button>
+    <script src="{{ asset('bundles/czesionestablepage/js/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ asset('bundles/czesionestablepage/js/jquery.nestable.js') }}"></script>
+	<button onclick=window.location="{{ path('czesio_page_new') }}">{{ 'new_page'|trans({}, 'CzesioNestablePageBundle') }}</button>
+	<button onclick=window.location="{{ path('czesio_pagemeta_new') }}">{{ 'new_pagemeta'|trans({}, 'CzesioNestablePageBundle') }}</button>
     <script>
 
     $(function() {
@@ -50,12 +50,12 @@
 
         	after = JSON.stringify($('.dd').nestable('serialize'));
 
-	        token = '{{ csrf_token("bpeh_page_reorder") }}';
+	        token = '{{ csrf_token("czesio_page_reorder") }}';
 
 	        if (before != after) {
 		        $.ajax({
 			        type: "POST",
-			        url: "{{ path('bpeh_page_reorder') }}",
+			        url: "{{ path('czesio_page_reorder') }}",
 			        data: { id: id, parentId: parentId, position: position, csrf: token },
 			        success: function (data, dataType) {
 				        if (data.success) {

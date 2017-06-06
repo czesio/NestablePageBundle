@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% trans_default_domain "BpehNestablePageBundle" %}
+{% trans_default_domain "CzesioNestablePageBundle" %}
 
 {% block body %}
     <h1>PageMeta list</h1>
@@ -20,7 +20,7 @@
         <tbody>
         {% for pageMeta in pageMetas %}
             <tr>
-                <td><a href="{{ path('bpeh_pagemeta_show', { 'id': pageMeta.id }) }}">{{ pageMeta.id }}</a></td>
+                <td><a href="{{ path('czesio_pagemeta_show', { 'id': pageMeta.id }) }}">{{ pageMeta.id }}</a></td>
                 <td>{{ pageMeta.pagetitle }}</td>
                 <td>{{ pageMeta.menutitle }}</td>
                 <td>{{ pageMeta.locale }}</td>
@@ -29,10 +29,10 @@
                 <td>
                     <ul>
                         <li>
-                            <a href="{{ path('bpeh_pagemeta_show', { 'id': pageMeta.id }) }}">show</a>
+                            <a href="{{ path('czesio_pagemeta_show', { 'id': pageMeta.id }) }}">show</a>
                         </li>
                         <li>
-                            <a href="{{ path('bpeh_pagemeta_edit', { 'id': pageMeta.id }) }}">edit</a>
+                            <a href="{{ path('czesio_pagemeta_edit', { 'id': pageMeta.id }) }}">edit</a>
                         </li>
                     </ul>
                 </td>
@@ -43,7 +43,7 @@
 
     <ul>
         <li>
-            <a href="{{ path('bpeh_pagemeta_new') }}">Create a new entry</a>
+            <a href="{{ path('czesio_pagemeta_new') }}">Create a new entry</a>
         </li>
     </ul>
 {% endblock %}
